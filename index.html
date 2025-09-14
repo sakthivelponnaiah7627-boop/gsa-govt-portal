@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Gov Scheme Portal</title>
+<style>
+  body {
+    font-family: Arial, sans-serif; 
+    background: #f0f2f5; 
+    margin: 0; 
+    padding: 0;
+  }
+  header {
+    text-align: center;
+    color: red;
+    margin-top: 35px;
+    margin-bottom: 0;
+  }
+  nav {
+    text-align: center;
+    margin-bottom: 35px;
+    display: none; /* Hidden until login */
+  }
+  nav img.icon {
+    width: 40px; 
+    margin: 0 8px 2px 8px;
+    cursor: pointer; 
+    vertical-align: middle;
+  }
+  nav b {
+    margin: 0 15px 0 4px;
+    font-weight: bold;
+    vertical-align: middle;
+  }
+  section {
+    display: none;
+    max-width: 600px;
+    margin: 40px auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    padding: 30px 30px 24px 30px;
+    text-align: center;
+  }
+  section.active { display: block; }
+  input, select, textarea {
+    width: 100%; 
+    padding: 10px; 
+    margin: 8px 0 14px 0; 
+    border-radius: 4px; 
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+  button {
+    width: 100%; 
+    padding: 10px; 
+    background: #007bff; 
+    color: white; 
+    border: none; 
+    cursor: pointer; 
+    border-radius: 4px;
+    font-size: 1rem;
+    margin-top: 10px;
+  }
+  button:hover { background: #0056b3; }
+  ul {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+  }
+  ul li { margin-bottom: 15px; font-weight: bold; }
+  label {
+    display: block; 
+    font-weight: bold; 
+    margin-bottom: 5px;
+    text-align: left;
+  }
+  img.preview {
+    margin-top: 10px; 
+    max-width: 200px; 
+    max-height: 150px; 
+    display: block;
+    border-radius: 4px;
+    box-shadow: 0 0 4px rgba(0,0,0,0.1);
+  }
+  #schemeAlertPage { background: #fff3cd; }
+  #schemeWorkViewPage { background: #d4edda; }
+  #schemeFeedbackPage { background: #f8d7da; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Government Scheme Alert Portal</h1>
+  <nav id="mainNav">
+    <img src="./ss.png" alt="Login" class="icon" title="Login" onclick="showSection('loginPage')" />
+    <b>login</b>
+    <img src="./aa.jpg" alt="Scheme Visit" class="icon" title="Scheme Visit" onclick="showSection('schemeVisitPage')" />
+    <b>scheme visit</b>
+    <img src="./bb.jpg" alt="Scheme Alert" class="icon" title="Scheme Alert" onclick="showSection('schemeAlertPage')" />
+    <b>scheme view</b>
+    <img src="./cc.jpg" alt="Work View" class="icon" title="Work View" onclick="showSection('schemeWorkViewPage')" />
+    <b>work view</b>
+    <img src="./dd.png" alt="Feedback" class="icon" title="Feedback" onclick="showSection('schemeFeedbackPage')" />
+    <b>feedback</b>
+  </nav>
+</header>
+<!-- Login Page -->
+<section id="loginPage" class="active">
+  <h2>Login to Gov Scheme Portal</h2>
+  <input type="text" id="username" placeholder="Username" />
+  <input type="password" id="password" placeholder="Password" />
+  <button onclick="login()">Login</button>
+</section>
+<section id="schemeVisitPage">
+  <h2 style="color:red;">Scheme Visit</h2>
+  <ul>
+    <li>Pipe Scheme Visit</li>
+    <li>Road Scheme Visit</li>
+    <li>School Building Scheme Visit</li>
+  </ul>
+</section>
+<section id="schemeAlertPage">
+  <h2>Government Scheme Alert Amounts</h2>
+  <ul>
+    <li>Pipe Scheme Fund: ₹50,00,000</li>
+    <li>Road Construction Fund: ₹1,20,00,000</li>
+    <li>School Building Fund: ₹75,00,000</li>
+  </ul>
+</section>
+<section id="schemeWorkViewPage">
+  <h2>Complete Scheme Work Details</h2>
+  <form id="workForm" onsubmit="return submitWorkDetails()">
+    <label for="schemeType">Scheme Type</label>
+    <select id="schemeType" required>
+      <option value="">Select Scheme</option>
+      <option value="pipe">Pipe</option>
+      <option value="road">Road</option>
+      <option value="school">School Building</option>
+    </select>
+    <label for="startDate">Start Date</label>
+    <input type="date" id="startDate" required />
+    <label for="endDate">End Date</label>
+    <input type="date" id="endDate" required />
+    <label for="fundAmount">Allocated Fund Amount (₹)</label>
+    <input type="number" id="fundAmount" min="0" required />
+    <label for="location">Location</label>
+    <input type="text" id="location" placeholder="Enter location" required />
+    <label for="workInProgressImg">Work In Progress Image</label>
+    <input type="file" id="workInProgressImg" accept="image/*" onchange="previewImage('workInProgressImgPreview', this)" required />
+    <img id="workInProgressImgPreview" class="preview" alt="Work In Progress Preview" />
+    <label for="workFinishedImg">Work Finished Image</label>
+    <input type="file" id="workFinishedImg" accept="image/*" onchange="previewImage('workFinishedImgPreview', this)" required />
+    <img id="workFinishedImgPreview" class="preview" alt="Work Finished Preview" />
+    <button type="submit">Submit Work Details</button>
+  </form>
+  <div id="submissionResult" style="margin-top: 20px; color: green;"></div>
+</section>
+<section id="schemeFeedbackPage">
+  <h2>Feedback on Scheme</h2>
+  <form id="feedbackForm" onsubmit="return submitFeedback()">
+    <label for="feedbackText">Your Feedback</label>
+    <textarea id="feedbackText" required placeholder="Write your feedback here..."></textarea>
+    <button type="submit">Submit Feedback</button>
+  </form>
+  <div id="feedbackResult" style="margin-top:15px; color: green;"></div>
+</section>
+<script>
+function showSection(sectionId) {
+  const sections = document.querySelectorAll('section');
+  sections.forEach(sec => sec.classList.remove('active'));
+  document.getElementById(sectionId).classList.add('active');
+}
+function login() {
+  const user = document.getElementById('username').value;
+  const pass = document.getElementById('password').value;
+  if (user === 'admin' && pass === 'password123') {
+    alert('Login successful!');
+    document.getElementById('mainNav').style.display = 'block';
+    showSection('schemeVisitPage');
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('loginPage').style.display = 'none';
+  } else {
+    alert('Invalid login credentials');
+  }
+}
+function previewImage(previewId, input) {
+  const preview = document.getElementById(previewId);
+  if (input.files && input.files) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      preview.src = e.target.result;
+    };
+    reader.readAsDataURL(input.files);
+  } else {
+    preview.src = "";
+  }
+}
+function submitWorkDetails() {
+  alert('Scheme work details submitted successfully! (Demo only)');
+  document.getElementById('workForm').reset();
+  document.getElementById('workInProgressImgPreview').src = "";
+  document.getElementById('workFinishedImgPreview').src = "";
+  document.getElementById('submissionResult').textContent = "Work details submitted successfully.";
+  return false;
+}
+function submitFeedback() {
+  alert('Thank you for your feedback!');
+  document.getElementById('feedbackForm').reset();
+  document.getElementById('feedbackResult').textContent = "Feedback submitted. Thank you!";
+  return false;
+}
+</script>
+</body>
+</html>
